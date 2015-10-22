@@ -4,7 +4,7 @@
 
 
 //OK to call this before the DOM is ready
-Parse.initialize("u8fq2u4IqxKXBa9PuPjHB40HA39gqnxMq8lKJYkG", "R9zpakOjl4dXU3quSQ9tvTwwe0uQA2IJj3GdNKTt");
+Parse.initialize("fd1HcECkyu5JDq2F8yDtnRXMRcCq6QNlG6jcWfFH", "X8HQ5wDe0Mu7ZrTEuFEc8ma0TW7OrmeI7kTjrEND");
 
 //when the document is ready...
 $(function() {
@@ -16,6 +16,7 @@ $(function() {
     //define a query for querying Task objects
     var tasksQuery = new Parse.Query(Task);
     tasksQuery.ascending('createdAt');
+    tasksQuery.notEqualTo('done', true);
 
     //varible to hold the current list of tasks
     var tasks = [];
@@ -25,6 +26,8 @@ $(function() {
 
     //reference to the tasks list element
     var tasksList = $('#tasks-list');
+
+    var ratingElem = $('#rating');
 
     function displayError(err) {
         errorMessage.text(err.message);
@@ -51,9 +54,18 @@ $(function() {
     function renderTasks() {
         tasksList.empty();
         tasks.forEach(function(task) {
-            $(document.createElement('li'))
+            var li = $(document.createElement('li'))
                 .text(task.get('title'))
-                .appendTo(tasksList);
+                .addClass(task.get('done') ? 'completed-task' : '')
+                .appendTo(tasksList)
+                .click(function() {
+                    task.set('done', !task.get('done'));
+                    task.save().then(renderTasks, displayError);
+                });
+            $(document.createElement('span'))
+                .raty({readOnly: true, score: (task.get('rating') || 0),
+                    hints:['crap','awful', 'ok', 'nice', 'best']})
+                .appendTo(li);
         });
     }
 
@@ -78,6 +90,7 @@ $(function() {
         //create a new Task and set the title
         var task = new Task();
         task.set('title', title);
+        task.set('rating', $('#rating').raty('score'));
 
         //save the new task to your Parse database
         //if save is successful, fetch the tasks again
@@ -88,6 +101,7 @@ $(function() {
             .then(fetchTasks, displayError)
             .then(function() {
                 titleInput.val('');
+                ratingElem.raty('set', {});
             });
 
         //some browsers also require that we return false to
@@ -97,6 +111,9 @@ $(function() {
 
     //fetch the tasks to kick everything off...
     fetchTasks();
+
+    //enable the rating star
+    ratingElem.raty();
 
     //refetch the tasks every so often
     //to get new tasks created by others
