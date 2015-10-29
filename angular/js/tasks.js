@@ -7,14 +7,13 @@ angular.module('Tasks', [])
     .controller('TasksController', function($scope, taskKey) {
         'use strict';
 
-
         //intialize tasks property on the scope to an empty array
         $scope.tasks = angular.fromJson(localStorage.getItem(taskKey)) || [];
         //initialize newTask to an empty objecet
         $scope.newTask = {};
 
         function saveTasks() {
-            localStorage.setItem(taskKey, angulartoJson($scope.tasks));
+            localStorage.setItem(taskKey, angular.toJson($scope.tasks));
         }
 
         //add a function to add newTask to the array
