@@ -12,6 +12,9 @@
         <!-- angular script file -->
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
 
+        <!--angular ui router -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
+
         <!-- load lodash-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
 
@@ -19,45 +22,8 @@
         <script src="js/movies.js"></script>
 
     </head>
-    <body ng-app="Movies" ng-controller="MoviesController"
-            >
-        <h1>moveis from 2014</h1>
-
-        <p>
-            <input type="search" class = 'form-comtrol'
-                   placeholder="type to filter" ng-model="query" />
-        </p>
-
-
-        <p>
-            <select ng-model="currentDistributor" ng-options="d for d in distributors">
-            </select>
-        </p>
-
-        <table class="table" >
-            <thead>
-                <tr>
-                    <th><a ng-click="setSort('title')" href="#">Title</a></th>
-                    <th><a ng-click="setSort('rating')">Rating</a></th>
-                    <th><a ng-click="setSort('released')">Released</a></th>
-                    <th><a ng-click="setSort('gross')">Gross Sales</a></th>
-                </tr>
-
-            </thead>
-
-            <tbody>
-            <tr ng-repeat="movie in movies  |
-            filter : {title:query} |
-            filter : {distributor: currentDistributor} |
-            orderBy: sortCol :sortReverse">
-                <td>{{movie.title}}</td>
-                <td>{{movie.rating}}</td>
-                <td>{{movie.released | date : 'MMM dd yyyy'}}</td>
-                <td>{{movie.gross | currency}}</td>
-            </tr>
-
-            </tbody>
-
-        </table>
+    <body class = "container" ng-app="Movies" >
+        <!-- defined by the router-->
+        <div ui-view></div>
     </body>
 </html>
