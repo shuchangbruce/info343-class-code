@@ -2,7 +2,7 @@
 
 <p class="alert alert-danger" ng-if="err">{{err.message}}</p>
 
-<form name="contactForm" novalidate ng-submit="saveContact()">
+<form class="edit-contact" name="contactForm" novalidate ng-submit="saveContact()">
     <div class="form-group">
         <label for="fnameInp">First Name:</label>
         <input type="text" class="form-control" id="fnameInp" name="fname" ng-model="contact.fname"

@@ -24,11 +24,11 @@ tfoot {
     font-size: 0.8em;
 }
 
-input.ng-dirty.ng-valid {
+.edit-contact input.ng-dirty.ng-valid {
     border: 1px solid #00DD00;
 }
 
-input.ng-dirty.ng-invalid {
+.edit-contact input.ng-dirty.ng-invalid {
     border: 1px solid #DD0000;
 }
 
