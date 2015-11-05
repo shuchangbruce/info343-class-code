@@ -84,6 +84,8 @@ angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'
             //copy our edits back to the original contact
             angular.copy($scope.contact, existingContact);
 
+            //TODO: save the contacts list to storage
+
             //use $state to go back to the list view
             $state.go('list');
         };
