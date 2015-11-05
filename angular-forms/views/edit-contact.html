@@ -1,42 +1,41 @@
 <h1>Edit {{contact.fname}} {{contact.lname}}</h1>
 
-<p class="alert alert-danger" ng-if="err">{{err.message}}</p>
-
 <form class="edit-contact" name="contactForm" novalidate ng-submit="saveContact()">
     <div class="form-group">
         <label for="fnameInp">First Name:</label>
-        <input type="text" class="form-control" id="fnameInp" name="fname" ng-model="contact.fname"
+        <input type="text" class="form-control" id="fnameInp" name="fnameImp" ng-model="contact.fname"
                 placeholder="enter a first name" required autofocus/>
     </div>
 
     <div class="form-group">
         <label for="lnameInp">Last Name:</label>
-        <input type="text" class="form-control" id="lnameInp" name="lname" ng-model="contact.lname"
+        <input type="text" class="form-control" id="lnameInp" name="lnameInp" ng-model="contact.lname"
                 placeholder="enter a last name" required/>
+        <p class="validation-error" ng-if="contactForm.lnameInp.$error.required">
+            a last name is required
+        </p>
     </div>
 
     <div class="form-group">
         <label for="phoneInp">Phone:</label>
-        <input type="tel" class="form-control" id="phoneInp" name="phone" ng-model="contact.phone"
+        <input type="tel" class="form-control" id="phoneInp" name="phoneInp" ng-model="contact.phone"
                 placeholder="phone number" required pattern="\d{3}-\d{3}-\d{4}"/>
-        <p class="validation-error" ng-if="contactForm.phone.$dirty && contactForm.phone.$error.required">
+        <p class="validation-error" ng-if="contactForm.phoneInp.$error.required">
             A phone number is required
         </p>
-        <p class="validation-error" ng-if="contactForm.phone.$dirty && contactForm.phone.$error.pattern">
+        <p class="validation-error" ng-if="contactForm.phoneInp.$error.pattern">
             Phone numbers must be in the pattern xxx-xxx-xxxx
         </p>
     </div>
 
     <div class="form-group">
         <label for="dobInp">Date of Birth:</label>
-        <input type="text" class="form-control" id="dobInp" name="dob" ng-model="contact.dob"
-               placeholder="date of birth" valid-date in-the-past/>
-        <p class="validation-error" ng-if="contactForm.dob.$error.validDate">That does not appear to be a valid date</p>
-        <p class="validation-error" ng-if="contactForm.dob.$error.inThePast">Date of birth must be in the past</p>
+        <input type="text" class="form-control" id="dobInp" name="dobInp" ng-model="contact.dob"
+               placeholder="date of birth" />
     </div>
 
     <div class="form-group">
         <a type="button" class="btn btn-default" ui-sref="list">Cancel</a>
-        <button type="submit" class="btn btn-primary" ng-disabled="!contactForm.$valid">Save</button>
+        <button type="submit" class="btn btn-primary" ng-disabled="contactForm.$invalid">Save</button>
     </div>
 </form>

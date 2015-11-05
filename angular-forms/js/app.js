@@ -2,10 +2,18 @@
     script file for the index.html page
 */
 
-angular.module('ContactsApp', ['ui.router', 'firebase'])
-    .constant('firebaseUrl', 'https://info343addr.firebaseio.com/contacts')
-    .factory('contacts', function($firebaseArray, firebaseUrl) {
-        return $firebaseArray(new Firebase(firebaseUrl));
+angular.module('ContactsApp', ['ui.router', 'angular-uuid', 'LocalStorageModule'])
+    .constant('storageKey', 'contacts-list')
+    .factory('contacts', function(localStorageService) {
+        return [
+            {
+                id: 'temp-delete-later',
+                fname: 'Fred',
+                lname: 'Flintstone',
+                phone: '206-555-1212',
+                dob: '1/1/1900'
+            }
+        ];
     })
     .config(function($stateProvider, $urlRouterProvider) {
         $stateProvider
@@ -27,56 +35,29 @@ angular.module('ContactsApp', ['ui.router', 'firebase'])
 
         $urlRouterProvider.otherwise('/contacts');
     })
-    .directive('validDate', function() {
-        return {
-            require: 'ngModel',
-            link: function(scope, elem, attrs, ctrl) {
-                ctrl.$validators.validDate = function(modelValue) {
-                    return ctrl.$isEmpty(modelValue) || !isNaN(Date.parse(modelValue));
-                }
-            }
-        }
-    })
-    .directive('inThePast', function() {
-        return {
-            require: 'ngModel',
-            link: function(scope, elem, attrs, ctrl) {
-                ctrl.$validators.inThePast = function(modelValue) {
-                    return ctrl.$isEmpty(modelValue)
-                        || isNaN(Date.parse(modelValue))
-                        || (new Date(modelValue) <= new Date());
-                };
-            }
-        };
-    })
     .controller('ContactsController', function($scope, contacts) {
         $scope.contacts = contacts;
     })
     .controller('ContactDetailController', function($scope, $stateParams, $state, contacts) {
-        contacts.$loaded().then(function() {
-            $scope.contact = contacts.$getRecord($stateParams.id);
+        $scope.contact = contacts.find(function(contact) {
+            return contact.id === $stateParams.id;
         });
 
-        $scope.deleteContact = function() {
-            contacts.$remove($scope.contact).then(function() {
-                $state.go('list');
-            });
-        };
     })
     .controller('EditContactController', function($scope, $stateParams, $state, contacts) {
-        $scope.contact = contacts.$getRecord($stateParams.id);
+        //find the contact using the id from the URL (available from $stateParams)
+        var existingContact = contacts.find(function(contact) {
+            return contact.id === $stateParams.id;
+        });
+
+        //make a copy of it for editing
+        $scope.contact = angular.copy(existingContact);
 
         $scope.saveContact = function() {
-            var prom;
-            if ($scope.contact.$id) {
-                prom = contacts.$save($scope.contact);
-            }
-            else {
-                prom = contacts.$add($scope.contact);
-            }
+            //copy our edits back to the original contact
+            angular.copy($scope.contact, existingContact);
 
-            prom.then(function() {
-                $state.go('list');
-            });
+            //use $state to go back to the list view
+            $state.go('list');
         };
     });
