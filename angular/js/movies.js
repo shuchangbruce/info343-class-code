@@ -98,13 +98,25 @@ angular.module('MoviesApp', ['ui.router'])
     //controller for the movie details view
     //we again tell Angular to inject the movies JSON, which will be the same
     //data we already fetched from the server for the list view
-    .controller('MovieDetailController', function($scope, $stateParams, moviesJSON) {
+    .controller('MovieDetailController', function($scope, $http, $stateParams, moviesJSON) {
+        $scope.posterUrl = 'img/default-poster.png';
         //even though we already have the data, moviesJSON is still a promise,
         //so we use .then() to register a function to be called with the results
         moviesJSON.then(function(data) {
             //the $stateParams service lets us get the movie ID off the local URL
             //so we can find the particular movie we are showing
             $scope.movie = data[$stateParams.movieId];
+
+            //also get details from the Open Movie Database
+            $http.get('http://www.omdbapi.com/', {
+                params: {
+                    t: $scope.movie.title,
+                    y: new Date($scope.movie.released).getUTCFullYear()
+                }
+            })
+                .then(function(results) {
+                    $scope.posterUrl = results.data.Poster;
+                });
         });
 
     }); //MoviesApp module

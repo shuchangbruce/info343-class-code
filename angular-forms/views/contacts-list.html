@@ -16,9 +16,7 @@
     </thead>
     <tbody>
         <tr ng-repeat="contact in contacts | filter : query | orderBy : ['lname', 'fname']">
-            <td>
-                <a ui-sref="detail({id: contact.id})">{{contact.fname}} <strong>{{contact.lname}}</strong></a>
-            </td>
+            <td><a ui-sref="detail({id: contact.id})">{{contact.fname}} <strong>{{contact.lname}}</strong></a></td>
             <td><a ng-href="tel:{{contact.phone}}">{{contact.phone}}</a></td>
         </tr>
     </tbody>
